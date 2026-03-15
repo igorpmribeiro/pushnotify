@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm run build -w packages/frontend",
+  "outputDirectory": "packages/frontend/dist",
+  "framework": null,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/((?!api).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/index.ts": {
+      "memory": 256,
+      "maxDuration": 10
+    }
+  }
+}
