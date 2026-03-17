@@ -2,6 +2,7 @@
   "name": "pushnotify",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
@@ -9,7 +10,12 @@
     "dev:backend": "npm run dev -w packages/backend",
     "dev:frontend": "npm run dev -w packages/frontend",
     "build": "npm run build -w packages/shared && npm run build -w packages/backend && npm run build -w packages/frontend",
+    "build:vercel": "node scripts/build-api.js && npm run build -w packages/frontend",
     "test": "npm run test -w packages/backend",
     "generate:vapid": "npm run generate:vapid -w packages/backend"
+  },
+  "devDependencies": {
+    "@vercel/node": "^5.0.0",
+    "typescript": "^5.6.0"
   }
 }

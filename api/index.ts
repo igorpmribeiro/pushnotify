@@ -1,18 +1,37 @@
-import type { IncomingMessage, ServerResponse } from 'node:http';
-import { loadEnv } from '../packages/backend/src/config/env.js';
-import { buildApp } from '../packages/backend/src/app.js';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-let app: Awaited<ReturnType<typeof buildApp>> | null = null;
+let app: any = null;
 
 async function getApp() {
   if (app) return app;
+
+  const { loadEnv } = await import('../packages/backend/src/config/env.js');
+  const { buildApp } = await import('../packages/backend/src/app.js');
+
   const env = loadEnv();
   app = await buildApp(env);
   await app.ready();
   return app;
 }
 
-export default async function handler(req: IncomingMessage, res: ServerResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   const fastify = await getApp();
-  fastify.server.emit('request', req, res);
+
+  const payload = req.body ? JSON.stringify(req.body) : undefined;
+  const { 'content-length': _cl, 'transfer-encoding': _te, ...headers } = req.headers;
+
+  const response = await fastify.inject({
+    method: req.method,
+    url: req.url,
+    headers,
+    payload,
+  });
+
+  res.status(response.statusCode);
+  for (const [key, value] of Object.entries(response.headers)) {
+    if (value !== undefined) {
+      res.setHeader(key, value);
+    }
+  }
+  res.send(response.body);
 }

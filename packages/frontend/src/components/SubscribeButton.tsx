@@ -20,6 +20,7 @@ export function SubscribeButton({
         onClick={onUnsubscribe}
         disabled={loading}
       >
+        {loading && <span className="btn__spinner" aria-hidden="true" />}
         {loading ? 'Processando...' : 'Desativar Notificacoes'}
       </button>
     );
@@ -31,6 +32,7 @@ export function SubscribeButton({
       onClick={onSubscribe}
       disabled={loading || disabled}
     >
+      {loading && <span className="btn__spinner" aria-hidden="true" />}
       {loading ? 'Processando...' : 'Ativar Notificacoes'}
     </button>
   );

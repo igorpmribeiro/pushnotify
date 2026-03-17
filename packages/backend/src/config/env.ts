@@ -15,6 +15,10 @@ const envSchema = z.object({
   WEBHOOK_SECRET: z.string().min(1, 'WEBHOOK_SECRET is required'),
   ADMIN_API_KEY: z.string().min(1, 'ADMIN_API_KEY is required'),
 
+  RUFER_API_URL: z.string().url().default('https://www.rufer.com.br/ws/v1'),
+  RUFER_CLIENT_ID: z.string().min(1, 'RUFER_CLIENT_ID is required'),
+  RUFER_CLIENT_SECRET: z.string().min(1, 'RUFER_CLIENT_SECRET is required'),
+
   CORS_ORIGIN: z.string().default('*'),
 });
 

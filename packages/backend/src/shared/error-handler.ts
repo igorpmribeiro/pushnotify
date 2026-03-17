@@ -27,6 +27,6 @@ export function errorHandler(
 
   reply.status(500).send({
     error: 'INTERNAL_ERROR',
-    message: 'An unexpected error occurred',
+    message: error.message || 'An unexpected error occurred',
   });
 }

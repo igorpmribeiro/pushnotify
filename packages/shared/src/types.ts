@@ -41,13 +41,11 @@ export interface PushResult {
   error?: string;
 }
 
-export interface ProductWebhookPayload {
-  id: string;
-  name: string;
-  description?: string;
-  price?: number;
-  image_url?: string;
-  url?: string;
+export interface ProductChangedWebhookPayload {
+  product_id: number;
+  sku: string;
+  type: string;
+  domain: string;
 }
 
 export interface SubscriptionRecord {

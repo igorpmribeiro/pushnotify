@@ -43,13 +43,14 @@ export class SubscriptionRepository {
   }
 
   async deleteByEndpoint(endpoint: string): Promise<boolean> {
-    const { error, count } = await this.supabase
+    const { data, error } = await this.supabase
       .from('subscriptions')
       .delete()
-      .eq('endpoint', endpoint);
+      .eq('endpoint', endpoint)
+      .select('id');
 
     if (error) throw error;
-    return (count ?? 0) > 0;
+    return (data?.length ?? 0) > 0;
   }
 
   async countActive(): Promise<number> {

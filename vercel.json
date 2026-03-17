@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm install",
   "buildCommand": "npm run build -w packages/frontend",
   "outputDirectory": "packages/frontend/dist",
   "framework": null,
@@ -8,7 +9,6 @@
   ],
   "functions": {
     "api/index.ts": {
-      "memory": 256,
       "maxDuration": 10
     }
   }

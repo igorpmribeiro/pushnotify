@@ -25,13 +25,9 @@ export class SubscriptionController {
       throw new ValidationError(parsed.error.issues[0].message);
     }
 
-    const deleted = await this.service.unsubscribe(parsed.data.endpoint);
+    await this.service.unsubscribe(parsed.data.endpoint);
 
-    if (deleted) {
-      request.log.info({ endpoint: parsed.data.endpoint }, 'Push subscription removed');
-      reply.status(204).send();
-    } else {
-      reply.status(404).send({ error: 'NOT_FOUND', message: 'Subscription not found' });
-    }
+    request.log.info({ endpoint: parsed.data.endpoint }, 'Push subscription removed');
+    reply.status(204).send();
   }
 }

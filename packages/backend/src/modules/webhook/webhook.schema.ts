@@ -1,12 +1,10 @@
 import { z } from 'zod';
 
-export const productWebhookSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  description: z.string().optional(),
-  price: z.number().positive().optional(),
-  image_url: z.string().url().optional(),
-  url: z.string().url().optional(),
+export const productChangedWebhookSchema = z.object({
+  product_id: z.number().int().positive(),
+  sku: z.string(),
+  type: z.string(),
+  domain: z.string(),
 });
 
-export type ProductWebhookInput = z.infer<typeof productWebhookSchema>;
+export type ProductChangedWebhookInput = z.infer<typeof productChangedWebhookSchema>;
