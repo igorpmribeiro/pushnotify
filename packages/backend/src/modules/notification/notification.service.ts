@@ -17,10 +17,10 @@ export class NotificationService {
     this.setupQueueProcessor();
   }
 
-  private setupQueueProcessor(): void {
-    const successMap = new Map<string, number>();
-    const failMap = new Map<string, number>();
+  private successMap = new Map<string, number>();
+  private failMap = new Map<string, number>();
 
+  private setupQueueProcessor(): void {
     this.queue.onProcess(async (job: NotificationJob) => {
       const result = await this.pushProvider.sendNotification(
         { endpoint: job.endpoint, keys: job.keys },
@@ -39,9 +39,9 @@ export class NotificationService {
       });
 
       if (result.success) {
-        successMap.set(job.notificationId, (successMap.get(job.notificationId) ?? 0) + 1);
+        this.successMap.set(job.notificationId, (this.successMap.get(job.notificationId) ?? 0) + 1);
       } else {
-        failMap.set(job.notificationId, (failMap.get(job.notificationId) ?? 0) + 1);
+        this.failMap.set(job.notificationId, (this.failMap.get(job.notificationId) ?? 0) + 1);
         this.logger.warn(
           { endpoint: job.endpoint, statusCode: result.statusCode, error: result.error },
           'Push notification delivery failed',
@@ -90,6 +90,20 @@ export class NotificationService {
       };
       await this.queue.enqueue(job);
     }
+
+    await this.queue.drain();
+
+    const successCount = this.successMap.get(notification.id) ?? 0;
+    const failCount = this.failMap.get(notification.id) ?? 0;
+    this.successMap.delete(notification.id);
+    this.failMap.delete(notification.id);
+
+    await this.notificationRepository.updateCounts(notification.id, successCount, failCount);
+
+    this.logger.info(
+      { notificationId: notification.id, successCount, failCount },
+      'Broadcast completed',
+    );
 
     return notification.id;
   }

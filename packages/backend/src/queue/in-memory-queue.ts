@@ -41,6 +41,10 @@ export class InMemoryQueue implements INotificationQueue {
     this.handler = handler;
   }
 
+  async drain(): Promise<void> {
+    await this.queue.onIdle();
+  }
+
   async getStats(): Promise<QueueStats> {
     return { ...this.stats };
   }
