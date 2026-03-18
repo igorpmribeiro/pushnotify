@@ -36,10 +36,16 @@ export function NotificationStatus({
   error,
 }: NotificationStatusProps) {
   if (!isSupported) {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
     return (
       <div className="status status--error" role="alert">
         <StatusIcon type="error" />
-        <span>Seu navegador nao suporta notificacoes push.</span>
+        <span>
+          {isIOS
+            ? 'No iOS, notificacoes push so funcionam pelo Safari. Abra este site no Safari, toque em "Compartilhar" e depois em "Adicionar a Tela de Inicio". Ao abrir o app pela tela inicial, as notificacoes estarao disponiveis.'
+            : 'Seu navegador nao suporta notificacoes push. Tente usar um navegador mais recente como Chrome, Firefox ou Edge.'}
+        </span>
       </div>
     );
   }
