@@ -42,6 +42,17 @@ export class RuferApiClient {
       },
     });
 
+    if (response.status === 403) {
+      const body = await response.text();
+      if (body.includes('Access token already been created')) {
+        this.logger.info('Rufer token already exists, fetching from database');
+        const existingToken = await this.tokenRepository.getToken();
+        if (existingToken) return existingToken;
+      }
+      this.logger.error({ status: response.status, body }, 'Rufer authentication failed');
+      throw new Error(`Rufer authentication failed: ${response.status}`);
+    }
+
     if (!response.ok) {
       const body = await response.text();
       this.logger.error({ status: response.status, body }, 'Rufer authentication failed');
