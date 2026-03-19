@@ -45,7 +45,7 @@ export class RuferApiClient {
     if (response.status === 403) {
       const body = await response.text();
       if (body.includes('Access token already been created')) {
-        this.logger.info('Rufer token already exists, fetching from database');
+        this.logger.info('Rufer token already exists on API side, fetching from database');
         const existingToken = await this.tokenRepository.getToken();
         if (existingToken) return existingToken;
       }
@@ -67,9 +67,11 @@ export class RuferApiClient {
   }
 
   async getProduct(productId: number): Promise<RuferProductResult> {
+    // 1. Try token from database
     let token = await this.tokenRepository.getToken();
 
     if (!token) {
+      // 2. No token in DB — authenticate and save
       token = await this.authenticate();
     }
 
@@ -77,8 +79,8 @@ export class RuferApiClient {
       headers: { 'access-token': token },
     });
 
-    if (response.status === 403) {
-      this.logger.info('Rufer token expired (403), re-authenticating');
+    if (response.status === 401) {
+      this.logger.info('Rufer token expired (401), re-authenticating');
       token = await this.authenticate();
       response = await fetch(`${this.config.baseUrl}/product/${productId}`, {
         headers: { 'access-token': token },
