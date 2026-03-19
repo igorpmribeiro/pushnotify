@@ -12,7 +12,7 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url('SUPABASE_URL must be a valid URL'),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
 
-  WEBHOOK_SECRET: z.string().min(1, 'WEBHOOK_SECRET is required'),
+  WEBHOOK_SECRET: z.string().optional(),
   ADMIN_API_KEY: z.string().min(1, 'ADMIN_API_KEY is required'),
 
   RUFER_API_URL: z.string().url().default('https://www.rufer.com.br/ws/v1'),

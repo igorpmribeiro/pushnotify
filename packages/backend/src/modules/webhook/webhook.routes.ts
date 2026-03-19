@@ -9,8 +9,6 @@ import { SubscriptionService } from '../subscription/subscription.service.js';
 import { SubscriptionRepository } from '../subscription/subscription.repository.js';
 import { WebPushProvider } from '../../push/web-push.provider.js';
 import { createQueue } from '../../queue/queue.factory.js';
-import { createWebhookAuthHook } from '../../plugins/webhook-auth.js';
-
 export async function webhookRoutes(app: FastifyInstance): Promise<void> {
   const subscriptionRepo = new SubscriptionRepository(app.supabase);
   const subscriptionService = new SubscriptionService(subscriptionRepo);
@@ -39,11 +37,9 @@ export async function webhookRoutes(app: FastifyInstance): Promise<void> {
 
   const notifiedProductRepo = new NotifiedProductRepository(app.supabase);
   const controller = new WebhookController(notificationService, ruferApiClient, notifiedProductRepo);
-  const webhookAuth = createWebhookAuthHook(app.env.WEBHOOK_SECRET);
 
   app.post('/webhooks/product-changed', {
     config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
-    preHandler: webhookAuth,
     handler: controller.handleProductChanged.bind(controller),
   });
 }
