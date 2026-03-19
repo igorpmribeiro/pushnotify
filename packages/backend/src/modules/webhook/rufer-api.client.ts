@@ -79,8 +79,8 @@ export class RuferApiClient {
       headers: { 'access-token': token },
     });
 
-    if (response.status === 401) {
-      this.logger.info('Rufer token expired (401), re-authenticating');
+    if (response.status === 403) {
+      this.logger.info('Rufer token invalid (403), re-authenticating');
       token = await this.authenticate();
       response = await fetch(`${this.config.baseUrl}/product/${productId}`, {
         headers: { 'access-token': token },
