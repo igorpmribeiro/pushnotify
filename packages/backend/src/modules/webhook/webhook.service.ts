@@ -11,10 +11,8 @@ export class WebhookService {
     const description = product.description_small || product.description_full;
 
     return {
-      title: `Novo produto: ${product.name}`,
-      body: description
-        ? `${description.slice(0, 200)}${priceText}`
-        : `Confira o novo produto disponível na loja${priceText}!`,
+      title: 'Temos novidades em nossa loja',
+      body: product.name,
       icon_url: product.image_default || undefined,
       target_url: product.url || undefined,
     };
