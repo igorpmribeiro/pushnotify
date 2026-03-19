@@ -23,20 +23,28 @@ export class TokenRepository {
       .single();
 
     if (existing) {
-      await this.supabase
+      const { error } = await this.supabase
         .from('api_tokens')
         .update({
           access_token: accessToken,
           updated_at: new Date().toISOString(),
         })
         .eq('app_name', APP_NAME);
+
+      if (error) {
+        throw new Error(`Failed to update token: ${error.message}`);
+      }
     } else {
-      await this.supabase
+      const { error } = await this.supabase
         .from('api_tokens')
         .insert({
           app_name: APP_NAME,
           access_token: accessToken,
         });
+
+      if (error) {
+        throw new Error(`Failed to insert token: ${error.message}`);
+      }
     }
   }
 }
