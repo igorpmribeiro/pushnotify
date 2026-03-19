@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-const PROVIDER = '7093';
+const APP_NAME = 'push_app';
 
 export class TokenRepository {
   constructor(private supabase: SupabaseClient) {}
@@ -9,7 +9,7 @@ export class TokenRepository {
     const { data } = await this.supabase
       .from('api_tokens')
       .select('access_token')
-      .eq('store_id', PROVIDER)
+      .eq('app_name', APP_NAME)
       .single();
 
     return data?.access_token ?? null;
@@ -19,7 +19,7 @@ export class TokenRepository {
     const { data: existing } = await this.supabase
       .from('api_tokens')
       .select('id')
-      .eq('store_id', PROVIDER)
+      .eq('app_name', APP_NAME)
       .single();
 
     if (existing) {
@@ -29,12 +29,12 @@ export class TokenRepository {
           access_token: accessToken,
           updated_at: new Date().toISOString(),
         })
-        .eq('store_id', PROVIDER);
+        .eq('app_name', APP_NAME);
     } else {
       await this.supabase
         .from('api_tokens')
         .insert({
-          store_id: PROVIDER,
+          app_name: APP_NAME,
           access_token: accessToken,
         });
     }
