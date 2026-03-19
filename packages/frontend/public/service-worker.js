@@ -37,13 +37,16 @@ self.addEventListener('notificationclick', (event) => {
   const url = event.notification.data?.url || '/';
 
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
-      for (const client of clients) {
-        if (client.url === url && 'focus' in client) {
-          return client.focus();
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clients) => {
+        for (const client of clients) {
+          if ('navigate' in client) {
+            return client.navigate(url).then((c) => c && c.focus());
+          }
         }
-      }
-      return self.clients.openWindow(url);
-    }),
+        return self.clients.openWindow(url);
+      })
+      .catch(() => self.clients.openWindow(url)),
   );
 });
