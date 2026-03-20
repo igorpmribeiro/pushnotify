@@ -2,7 +2,10 @@ import { Layout } from './components/Layout';
 import { SubscribeButton } from './components/SubscribeButton';
 import { NotificationStatus } from './components/NotificationStatus';
 import { HowItWorks } from './components/HowItWorks';
+import { IOSGuide } from './components/IOSGuide';
 import { usePushSubscription } from './hooks/usePushSubscription';
+
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 export function App() {
   const {
@@ -39,6 +42,10 @@ export function App() {
           onUnsubscribe={unsubscribe}
         />
       </section>
+
+      {!isSubscribed && isIOS && !isSupported && (
+        <IOSGuide />
+      )}
 
       {!isSubscribed && isSupported && permission !== 'denied' && (
         <HowItWorks />
